@@ -22,10 +22,10 @@ gulp.src('./src/*.md')
     remove: true
   }))
   .pipe(renderer({
-    process: "pre"     // pre-process
+    target: "content"
   }))
   .pipe(marked())
-  .pipe(renderer({}))  // post-process
+  .pipe(renderer({}))
   .pipe(gulp.dest('./dist'));
 });
 ```
@@ -85,19 +85,19 @@ after post-process.
 
 ## API
 
-### render(options, settings)
+### render(options)
 
 #### options
 Type: `hash`
-Default: `{ process: "post", property: "forntMatter", templateDir: "./layouts/"}`
+Default: `{ target: "wrap", property: "forntMatter", templateDir: "./layouts"}`
 
-##### options.process
+##### options.target
 Type: `String`
-Default: `post`
+Default: `wrap`
 
-When `pre` is specified, it render embedded template within `file.contents`. Default template is ejs. If you want to user mustache, set `mustache` to `frontMatter.local`.
+When `content` is specified, it render embedded template within `file.contents`. Default template is ejs. If you want to user mustache, set `mustache` to `frontMatter.local`.
 
-When `post` is specified, you can refer `file.contents` through `contents` variable in the template file. Default template file is `./layouts/default.ejs`. You can specify template file by `frontMatter.layout`.
+When `wrap` is specified, you can refer `file.contents` through `contents` variable in the template file. Default template file is `./layouts/default.ejs`. You can specify template file by `frontMatter.layout`.
 You can also use mustache or jade for template file.
 
 ##### options.property
@@ -110,7 +110,7 @@ a Object name of which contains local variables.
 Type: `String`
 Default: `./layouts/`
 
-A directory in which template files are placed. 
+A directory in which template files are placed.
 
 ## License
 
