@@ -79,8 +79,7 @@ function findTemplate(data, layout, dir) {
 }
 
 function gulpMultiRenderer(options) {
-
-    var output = through.obj(function (file, enc, callback) {
+    return through.obj(function (file, enc, callback) {
         options = merge(defaultOptions, options);
 
         if (file.isNull()) {
@@ -118,8 +117,6 @@ function gulpMultiRenderer(options) {
         this.push(file);
         return callback();
     });
-
-    return output;
 }
 
 module.exports = gulpMultiRenderer;
