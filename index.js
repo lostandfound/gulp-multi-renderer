@@ -80,38 +80,31 @@ function findTemplate(data, layout, dir) {
 
 function gulpMultiRenderer(options) {
     return through.obj(function (file, enc, callback) {
-        options = merge(defaultOptions, options);
+        // Only try to process the stream if it actually _is_ a stream.
+        if (!file.isNull() || !file.isStream()) {
+            options = merge(defaultOptions, options);
 
-        if (file.isNull()) {
-            this.push(file);
-            return callback();
-        }
+            // initialize local data
+            var local = {};
+            local[options.property] = file[options.property];
+            local[options.property].engine = typeof local[options.property].engine === "undefined" ? "ejs" : local[options.property].engine;
 
-        if (file.isStream()) {
-            this.push(file);
-            return callback();
-        }
+            // render template within the file.contents
+            if (options.target === "content") {
+                file.contents = renderTemplate(String(file.contents), local, local[options.property].engine);
+                this.push(file);
+                return callback();
+            }
 
-        // initialize local data
-        var local = {};
-        local[options.property] = file[options.property];
-        local[options.property].engine = typeof local[options.property].engine === "undefined" ? "ejs" : local[options.property].engine;
+            // render template file to wrap the file.contents
+            if (options.target === "wrap") {
+                var layout = typeof local[options.property].layout === "undefined" ? "default" : local[options.property].layout;
+                local.contents = file.contents;
 
-        // render template within the file.contents
-        if (options.target === "content") {
-            file.contents = renderTemplate(String(file.contents), local, local[options.property].engine);
-            this.push(file);
-            return callback();
-        }
-
-        // render template file to wrap the file.contents
-        if (options.target === "wrap") {
-            var layout = typeof local[options.property].layout === "undefined" ? "default" : local[options.property].layout;
-            local.contents = file.contents;
-
-            file.contents = findTemplate(local, layout, options.templateDir);
-            this.push(file);
-            return callback();
+                file.contents = findTemplate(local, layout, options.templateDir);
+                this.push(file);
+                return callback();
+            }
         }
 
         this.push(file);
