@@ -69,24 +69,20 @@ function gulpMultiRenderer(options) {
             // Allow direct access of front matter options.
             var template = file[options.property];
 
-            try {
-                // We only want to process the markdown file.
-                if (options.target === "content") {
-                    template.contents = String(file.contents);
-                }
-                // We want to process the actual template with the desired renderer.
-                else if (options.target === "wrap") {
-                    template.contents = require("fs").readFileSync(
-                        options.templateDir + "/" + template.layout + "." + template.engine,
-                        encoding
-                    );
-                }
-
-                // Let the actual rendering engine perform its magic.
-                file.contents = new Buffer(require(template.engine).render(template.contents, file));
-            } catch (e) {
-                console.error(e);
+            // We only want to process the markdown file.
+            if (options.target === "content") {
+                template.contents = String(file.contents);
             }
+            // We want to process the actual template with the desired renderer.
+            else if (options.target === "wrap") {
+                template.contents = require("fs").readFileSync(
+                    options.templateDir + "/" + template.layout + "." + template.engine,
+                    encoding
+                );
+            }
+
+            // Let the actual rendering engine perform its magic.
+            file.contents = new Buffer(require(template.engine).render(template.contents, file));
         }
 
         this.push(file);
