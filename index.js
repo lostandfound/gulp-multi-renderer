@@ -82,6 +82,9 @@ function gulpMultiRenderer(options) {
     return through.obj(function (file, enc, callback) {
         // Only try to process the stream if it actually _is_ a stream.
         if (!file.isNull() || !file.isStream()) {
+            var merge = require("merge");
+
+            // Merge default with user supplied options.
             options = merge(defaultOptions, options);
 
             // initialize local data
