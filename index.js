@@ -9,6 +9,16 @@ var ejs = require("ejs");
 var mustache = require("mustache");
 var jade = require("jade");
 
+/**
+ * Default options for this module.
+ * @type {{property: string, target: string, templateDir: string}}
+ */
+var defaultOptions = {
+    property: "frontMatter",
+    target: "wrap",
+    templateDir: "./layouts"
+};
+
 function renderTemplate(template, data, engine) {
 
     engine = engine || "ejs";
@@ -71,12 +81,7 @@ function findTemplate(data, layout, dir) {
 function gulpMultiRenderer(options) {
 
     var output = through.obj(function (file, enc, callback) {
-
-        // inital values for options
-        options = options || {};
-        options.target = typeof options.target === "undefined" ? "wrap" : options.target;
-        options.property = typeof options.property === "undefined" ? "frontMatter" : options.property;
-        options.templateDir = typeof options.templateDir === "undefined" ? "./layouts/" : options.templateDir;
+        options = merge(defaultOptions, options);
 
         if (file.isNull()) {
             this.push(file);
