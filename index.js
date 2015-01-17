@@ -24,34 +24,7 @@ function renderTemplate(template, data, engine) {
 }
 
 function findTemplate(data, layout, dir) {
-
-    var template;
-
-    // Jadeのレイアウト
-    try {
-        template = fs.readFileSync(dir + "/" + layout + ".jade", "utf-8");
-        return renderTemplate(template, data, "jade");
-    } catch (e) {}
-
-    // Mustacheのレイアウト
-    try {
-        template = fs.readFileSync(dir + "/" + layout + ".mustache", "utf-8");
-        return renderTemplate(template, data, "mustache");
-    } catch (e) {}
-
-    // EJSのレイアウト
-    try {
-        template = fs.readFileSync(dir + "/" + layout + ".ejs", "utf-8");
-        return renderTemplate(template, data, "ejs");
-    } catch (e) {}
-
-    // デフォルトレイアウト
-    try {
-        template = fs.readFileSync(dir + "/" + "default.ejs", "utf-8");
-        return renderTemplate(template, data, "ejs");
-    } catch (e) {
-        console.log(e.toString());
-    }
+    return renderTemplate(fs.readFileSync(dir + "/" + layout + "." + data.engine), data, data.engine, "utf-8");
 }
 
 function gulpMultiRenderer(options) {
