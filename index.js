@@ -20,31 +20,7 @@ var defaultOptions = {
 };
 
 function renderTemplate(template, data, engine) {
-
-    engine = engine || "ejs";
-
-    // Jade
-    if (engine === "jade") {
-        try {
-            return new Buffer(jade.render(template, data));
-        } catch (e) {}
-    }
-
-    // mustache
-    if (engine === "mustache") {
-        try {
-            return new Buffer(mustache.render(template, data));
-        } catch (e) {}
-    }
-
-    // EJS
-    if (engine === "ejs") {
-        try {
-            return new Buffer(ejs.render(template, data));
-        } catch (e) {}
-    }
-
-    return new Buffer(template);
+    return new Buffer(require(engine).render(template, data));
 }
 
 function findTemplate(data, layout, dir) {
@@ -79,7 +55,7 @@ function findTemplate(data, layout, dir) {
 }
 
 function gulpMultiRenderer(options) {
-    return through.obj(function (file, enc, callback) {
+    return through.obj(function (file, encoding, callback) {
         // Only try to process the stream if it actually _is_ a stream.
         if (!file.isNull() || !file.isStream()) {
             var merge = require("merge");
