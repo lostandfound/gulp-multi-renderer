@@ -71,14 +71,16 @@ function gulpMultiRenderer(options) {
 
             // We only want to process the markdown file.
             if (options.target === "content") {
+                // We already have the markdown file's content, just convert the buffer to a string.
                 template.contents = String(file.contents);
             }
             // We want to process the actual template with the desired renderer.
             else if (options.target === "wrap") {
-                template.contents = require("fs").readFileSync(
-                    options.templateDir + "/" + template.layout + "." + template.engine,
-                    encoding
-                );
+                // The filename property is required for includes to work.
+                file.filename = options.templateDir + "/" + template.layout + "." + template.engine;
+
+                // Read the actual template from disk, note the sync in the method name.
+                template.contents = require("fs").readFileSync(file.filename, encoding);
             }
 
             // Let the actual rendering engine perform its magic.
