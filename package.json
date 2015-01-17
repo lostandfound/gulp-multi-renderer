@@ -1,34 +1,40 @@
 {
-  "name": "gulp-multi-renderer",
-  "version": "0.0.2",
-  "description": "plugin to render contents using various template engines.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "gulpplugin",
-    "ejs",
-    "mustache",
-    "jade",
-    "markdown"
-  ],
-  "author": "lost_and_found",
-  "license": "MIT",
-  "dependencies": {
-    "ejs": "^1.0.0",
-    "jade": "1.1 - 1.7",
-    "merge": "^1.2.0",
-    "mustache": "^0.8.2",
-    "through2": "^0.5.1"
-  },
-  "devDependencies": {
-    "chai": "^1.9.2",
-    "gulp": "^3.8.9",
-    "gulp-debug": "^1.0.1",
-    "gulp-front-matter": "^1.0.0",
-    "gulp-marked": "^1.0.0",
-    "mocha": "^2.0.1"
-  },
-  "repository": "https://github.com/lostandfound/gulp-multi-renderer.git"
+    "name": "gulp-multi-renderer",
+    "version": "0.1.0",
+    "description": "Module to render contents using various templating engines.",
+    "author": "lost_and_found",
+    "contributors": [
+        "Richard Fussenegger <richard@fussenegger.info> (http://richard.fussenegger.info/)"
+    ],
+    "keywords": [
+        "gulpplugin",
+        "ejs",
+        "mustache",
+        "jade",
+        "markdown"
+    ],
+    "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lostandfound/gulp-multi-renderer"
+    },
+    "bugs": {
+        "url": "https://github.com/lostandfound/gulp-multi-renderer/issues"
+    },
+    "dependencies": {
+        "ejs": "^1.0.0",
+        "jade": "1.1 - 1.7",
+        "merge": "^1.2.0",
+        "mustache": "^0.8.2",
+        "through2": "^0.5.1"
+    },
+    "devDependencies": {
+        "chai": "^1.9.2",
+        "gulp": "^3.8.9",
+        "gulp-debug": "^1.0.1",
+        "gulp-front-matter": "^1.0.0",
+        "gulp-marked": "^1.0.0",
+        "mocha": "^2.0.1"
+    },
+    "license": "MIT"
 }
