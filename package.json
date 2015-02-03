@@ -22,19 +22,19 @@
         "url": "https://github.com/lostandfound/gulp-multi-renderer/issues"
     },
     "dependencies": {
-        "ejs": "^1.0.0",
-        "jade": "1.1 - 1.7",
         "merge": "^1.2.0",
-        "mustache": "^0.8.2",
         "through2": "^0.5.1"
     },
     "devDependencies": {
         "chai": "^1.9.2",
+        "ejs": "^1.0.0",
         "gulp": "^3.8.9",
         "gulp-debug": "^1.0.1",
         "gulp-front-matter": "^1.0.0",
         "gulp-marked": "^1.0.0",
-        "mocha": "^2.0.1"
+        "jade": "1.1 - 1.7",
+        "mocha": "^2.0.1",
+        "mustache": "^0.8.2"
     },
     "license": "MIT"
 }
