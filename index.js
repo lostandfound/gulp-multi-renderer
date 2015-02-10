@@ -60,6 +60,9 @@ function gulpMultiRenderer(options) {
         if (!file.isNull() && !file.isStream()) {
             var merge = require("merge");
 
+            // The filename property is required for includes to work.
+            file.filename = options.templateDir + "/" + template.layout + "." + template.engine;
+
             // Merge default with user supplied options.
             options = merge({}, defaultOptions, options);
 
@@ -76,9 +79,6 @@ function gulpMultiRenderer(options) {
             }
             // We want to process the actual template with the desired renderer.
             else if (options.target === "wrap") {
-                // The filename property is required for includes to work.
-                file.filename = options.templateDir + "/" + template.layout + "." + template.engine;
-
                 // Read the actual template from disk, note the sync in the method name.
                 template.contents = require("fs").readFileSync(file.filename, encoding);
             }
