@@ -1,40 +1,41 @@
 {
-    "name": "gulp-multi-renderer",
-    "version": "0.1.0",
-    "description": "Module to render contents using various templating engines.",
-    "author": "lost_and_found",
-    "contributors": [
-        "Richard Fussenegger <richard@fussenegger.info> (http://richard.fussenegger.info/)"
-    ],
-    "keywords": [
-        "gulpplugin",
-        "ejs",
-        "mustache",
-        "jade",
-        "markdown"
-    ],
-    "main": "index.js",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/lostandfound/gulp-multi-renderer"
-    },
-    "bugs": {
-        "url": "https://github.com/lostandfound/gulp-multi-renderer/issues"
-    },
-    "dependencies": {
-        "merge": "^1.2.0",
-        "through2": "^0.5.1"
-    },
-    "devDependencies": {
-        "chai": "^1.9.2",
-        "ejs": "^1.0.0",
-        "gulp": "^3.8.9",
-        "gulp-debug": "^1.0.1",
-        "gulp-front-matter": "^1.0.0",
-        "gulp-marked": "^1.0.0",
-        "jade": "1.1 - 1.7",
-        "mocha": "^2.0.1",
-        "mustache": "^0.8.2"
-    },
-    "license": "MIT"
+  "name": "gulp-multi-renderer",
+  "version": "0.1.1",
+  "description": "Module to render contents using various templating engines.",
+  "author": "Hiroshi Takase <itshustletime@gmail.com>",
+  "contributors": [
+    "Richard Fussenegger <richard@fussenegger.info> (http://richard.fussenegger.info/)"
+  ],
+  "keywords": [
+    "gulpplugin",
+    "ejs",
+    "mustache",
+    "jade",
+    "markdown"
+  ],
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lostandfound/gulp-multi-renderer"
+  },
+  "bugs": {
+    "url": "https://github.com/lostandfound/gulp-multi-renderer/issues"
+  },
+  "dependencies": {
+    "gulp-util": "*",
+    "merge": "*",
+    "through2": "*"
+  },
+  "devDependencies": {
+    "chai": "1.9.x",
+    "ejs": "*",
+    "gulp": "*",
+    "gulp-debug": "*",
+    "gulp-front-matter": "*",
+    "gulp-marked": "*",
+    "jade": "*",
+    "mocha": "2.0.x",
+    "mustache": "*"
+  },
+  "license": "MIT"
 }

@@ -21,9 +21,7 @@ gulp.src('./src/*.md')
   .pipe(frontMatter({
     remove: true
   }))
-  .pipe(renderer({
-    target: "content"
-  }))
+  .pipe(renderer(renderer.TARGET_CONTENT))
   .pipe(marked())
   .pipe(renderer({}))
   .pipe(gulp.dest('./dist'));
@@ -91,14 +89,25 @@ after post-process.
 Type: `hash`
 Default: `{ target: "wrap", property: "forntMatter", templateDir: "./layouts"}`
 
+The options will be merged with these default options. Only providing a string is also possible, in which case it is
+assumed that the property `target` is meant, ergo the following two examples are equivalent:
+
+```javascript
+gulp.src('src/*.md').pipe(renderer(renderer.TARGET_CONTENT);
+
+gulp.src('src/*.md').pipe(renderer({ target: renderer.TARGET_CONTENT });
+```
+
 ##### options.target
 Type: `String`
 Default: `wrap`
 
-When `content` is specified, it render embedded template within `file.contents`. Default template is ejs. If you want to user mustache, set `mustache` to `frontMatter.local`.
+When `content` is specified, it render embedded template within `file.contents`. Default template is ejs. If you want
+to user mustache, set `mustache` to `frontMatter.local`.
 
-When `wrap` is specified, you can refer `file.contents` through `contents` variable in the template file. Default template file is `./layouts/default.ejs`. You can specify template file by `frontMatter.layout`.
-You can also use mustache or jade for template file.
+When `wrap` is specified, you can refer `file.contents` through `contents` variable in the template file. Default
+template file is `./layouts/default.ejs`. You can specify template file by `frontMatter.layout`. You can also use
+mustache or jade for template file.
 
 ##### options.property
 Type: `String`

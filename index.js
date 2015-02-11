@@ -1,96 +1,134 @@
-/* jshint node:true */
-
 /*!
  * The MIT License (MIT)
  *
  * Copyright (c) 2014 Bas van Driel
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+ * documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
  * Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
  * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-"use strict";
 
 /**
  * Gulp multi renderer node.js module.
  *
- * @author lost_and_found <?>
+ * @author Hiroshi Takase <itshustletime@gmail.com>
  * @author Richard Fussenegger <richard@fussenegger.info>
- * @copyright 2014 lost_and_found
- * @license MIT
- * @link https://github.com/Fleshgrinder/gulp-multi-renderer
+ * @copyright 2014 Hiroshi Takase
+ * @license http://en.wikipedia.org/wiki/MIT_License MIT
+ * @link https://github.com/lostandfound/gulp-multi-renderer
  */
+var fs = require('fs');
+var gutil = require('gulp-util');
+var merge = require('merge');
+var through = require('through2');
+
+/**
+ * Name of the gulp plugin.
+ *
+ * @type {string}
+ */
+const PLUGIN_NAME = 'gulp-multi-renderer';
+
+/**
+ * Content target.
+ *
+ * @var {string}
+ */
+const TARGET_CONTENT = 'content';
+module.exports.TARGET_CONTENT = TARGET_CONTENT;
+
+/**
+ * Wrap target.
+ *
+ * @var {string}
+ */
+const TARGET_WRAP = 'wrap';
+module.exports.TARGET_WRAP = TARGET_WRAP;
 
 /**
  * Default options for front matter module.
+ *
  * @type {{engine: string, layout: string}}
  */
 var defaultFrontMatterOptions = {
-    engine: "ejs",
-    layout: "default"
+    engine: 'ejs',
+    layout: 'default'
 };
 
 /**
  * Default options for this module.
+ *
  * @type {{property: string, target: string, templateDir: string}}
  */
 var defaultOptions = {
-    property: "frontMatter",
-    target: "wrap",
-    templateDir: "./layouts"
+    property: 'frontMatter',
+    target: TARGET_WRAP,
+    templateDir: './layouts'
 };
 
 /**
  * Handle gulp stream.
- * @param {{property: string, target: string, templateDir: string}} options - User defined options for this module.
+ *
+ * @param {{property: string, target: string, templateDir: string}|string} options - User defined options for this module.
  * @return {Stream} - The handled gulp stream.
  */
-function gulpMultiRenderer(options) {
-    return require("through2").obj(function (file, encoding, callback) {
-        // Only try to process the stream if it actually _is_ a stream.
-        if (!file.isNull() && !file.isStream()) {
-            var merge = require("merge");
+module.exports = function gulpMultiRenderer(options) {
+    if (typeof options === 'string') {
+        options = { target: options };
+    }
 
-            // The filename property is required for includes to work.
-            file.filename = options.templateDir + "/" + template.layout + "." + template.engine;
+    options = merge({}, defaultOptions, options);
 
-            // Merge default with user supplied options.
-            options = merge({}, defaultOptions, options);
+    return through.obj(function (file, encoding, callback) {
+        var self = this;
 
-            // Merge default front matter with extracted options.
-            file[options.property] = merge({}, defaultFrontMatterOptions, file[options.property]);
-
-            // Allow direct access of front matter options.
-            var template = file[options.property];
-
-            // We only want to process the markdown file.
-            if (options.target === "content") {
-                // We already have the markdown file's content, just convert the buffer to a string.
-                template.contents = String(file.contents);
-            }
-            // We want to process the actual template with the desired renderer.
-            else if (options.target === "wrap") {
-                // Read the actual template from disk, note the sync in the method name.
-                template.contents = require("fs").readFileSync(file.filename, encoding);
-            }
-
-            // Let the actual rendering engine perform its magic.
-            file.contents = new Buffer(require(template.engine).render(template.contents, file));
+        if (file.isNull()) {
+            callback(null, file);
+            return;
         }
 
-        this.push(file);
-        return callback();
-    });
-}
+        // TODO: Handle streams as well.
+        if (file.isStream()) {
+            throw new gutil.PluginError(PLUGIN_NAME, 'Streaming is not supported.');
+        }
 
-// Export the module.
-module.exports = gulpMultiRenderer;
+        file[options.property] = merge({}, defaultFrontMatterOptions, file[options.property]);
+
+        var template = file[options.property];
+
+        if (options.target === TARGET_CONTENT) {
+            file.filename = file.path;
+            file.contents = new Buffer(require(template.engine).render(file.contents.toString(), file));
+
+            this.push(file);
+            callback();
+        } else if (options.target === TARGET_WRAP) {
+            file.filename = options.templateDir + '/' + template.layout + '.' + template.engine;
+
+            fs.readFile(file.filename, { encoding: encoding }, function (error, data) {
+                if (error) {
+                    throw new gutil.PluginError(PLUGIN_NAME, error, { file: file.path });
+                }
+
+                file.contents = new Buffer(require(template.engine).render(data, file));
+
+                self.push(file);
+                callback();
+            });
+        } else {
+            gutil.log(gutil.colors.cyan(PLUGIN_NAME), 'unknown target supplied "', gutil.colors.red(options.target), '".');
+
+            this.push(file);
+            callback();
+        }
+    });
+};
